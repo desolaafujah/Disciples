@@ -4,7 +4,7 @@
 
 
 from forms import registerCheck, registrationForm
-from flask import Flask, render_template, redirect, request, jsonify
+from flask import Flask, render_template, redirect, request, jsonify, flash
 from flask_pymongo import PyMongo 
 import pymongo
 from bson import ObjectId
@@ -32,20 +32,29 @@ db = client["Disciples"]
 @app.route('/register', methods=['POST'])
 #function to register user and log information into the database
 def register(username, password):
-    if registerCheck(username):
-        form = registrationForm()
+    form = registrationForm()
+    if form.registerCheck(username):
+
         # add user info to the database
-        usersCollections = db["users"]
+        usersCollections = db["users"] #a table
         # Disciples is the database name 
         # users is the table name in the Disciples database
-        discipleData = {
-
-        }
-
+        discipleData = usersCollections(
+            firstName = form.firstName,
+            lastName = form.lastName,
+            userName = form.username,
+            email = form.email,
+            churchAffiliation = form.church,
+            spiritualBirthday = form.spirthday,
+            password = form.password
+        )
+        
+        # how do i insert this data into the database?
+        
 
 
     else:
-        print("Username already exists")
+        flash('Username taken!')
         #could also do the flash message thing
 
 # for login page, use GET for rendering pages

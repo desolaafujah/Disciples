@@ -11,7 +11,9 @@ class registrationForm():
     maxDate = date.today()
 
     # form fields and validators 
-    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=15)])
+    firstName = StringField('First Name', validators=[DataRequired(), Length(min=2, max=20)])
+    lastName = StringField('Last Name', validators=[DataRequired(), Length(min=2, max=20)])
+    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
     email = StringField('Email', validators=[DataRequired(), Email()])
     #for church, i could actually just make a dropdown menu for the user to choose from ->so SelectField would be used
     church = SelectField('Church', validators=[DataRequired()], choices = [
@@ -79,12 +81,17 @@ class registrationForm():
     ])
 
     # raises an error if date selected is in the future
-    def notInFuture(form, field):
-        if field.data > date.today():
+    def notInFuture(form):
+        if form.spirthday > date.today():
             raise ValidationError('Spirthday cannot be in the future lol')
 
     spirthday = DateField('Spirthday', validators=[DataRequired(), notInFuture])
+    password = PasswordField('Password', validators=[DataRequired()])
+    confirmPassword = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Sign Up')
 
+
+    #checks is a user already exists
     def registerCheck(username):
         client = MongoClient("mongodb://localhost:27017/")
         db = client["disciples"]
@@ -96,6 +103,10 @@ class registrationForm():
             return False #username exists 
         else:
             return True
+        
+
+
+    # cretae function for returning users 
         
 
         
