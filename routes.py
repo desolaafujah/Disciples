@@ -4,7 +4,7 @@
 
 
 from forms import registrationForm
-from flask import Flask, render_template, redirect, request, jsonify, flash
+from flask import Flask, render_template, redirect, request,url_for, jsonify, flash
 from flask_pymongo import PyMongo 
 import pymongo
 from bson import ObjectId
@@ -39,8 +39,8 @@ def register(username, password):
     form = registrationForm(request.form)
 
     # check if the username already exists
-    if form.validate_on_submit():
-        if not form.registerCheck(form.username.data):
+    if form.validate():
+        if not form.registerCheck():
             return jsonify({'message': 'Username already exists'}), 400
 
     
@@ -65,7 +65,7 @@ def register(username, password):
     
     flash('Invalid form data', 'danger')
     # return redirect(url_for('home'))
-    
+
 # for login page, use GET for rendering pages
 # POST is used to submit data to the server (Flask)
 

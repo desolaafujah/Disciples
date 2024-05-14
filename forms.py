@@ -1,9 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, DateField, PasswordField, SubmitField, BooleanField, IntegerField, SelectField
+from wtforms import StringField, DateField, PasswordField, SubmitField, SelectField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
-from flask import Flask, render_template, url_for
 from pymongo import MongoClient
-from bson.objectid import ObjectId
 from datetime import date
 
 
@@ -81,11 +79,11 @@ class registrationForm():
     ])
 
     # raises an error if date selected is in the future
-    def notInFuture(form):
-        if form.spirthday > date.today():
+    def validSpirthday(form):
+        if form.spirthday.data > date.today():
             raise ValidationError('Spirthday cannot be in the future lol')
 
-    spirthday = DateField('Spirthday', validators=[DataRequired(), notInFuture])
+    spirthday = DateField('Spirthday', validators=[DataRequired(), validSpirthday])
     password = PasswordField('Password', validators=[DataRequired()])
     confirmPassword = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Sign Up')
@@ -106,7 +104,10 @@ class registrationForm():
         
 
 
-    # cretae function for returning users 
+    # cretae function for returning users -> login page
+
+    def login(username):
+        
         
 
         
