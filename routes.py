@@ -3,7 +3,7 @@
 #user authentication to save user information into database 
 
 
-from forms import registrationForm
+from forms import RegistrationForm
 from flask import Flask, render_template, redirect, request,url_for, jsonify, flash
 from flask_pymongo import PyMongo 
 import pymongo
@@ -33,20 +33,23 @@ mongo = PyMongo(app)
 
 
 # route that handles user registration requests
-@app.route('/register', methods=['POST'])
+# GET -> retrieves from server
+# POST -> sends data to server to create or update a resource
+@app.route('/register', methods=['GET','POST'])
 #function to register user and log information into the database
 def register(username, password):
-    form = registrationForm()
+    form = RegistrationForm()
+    
 
-    # check if the username already exists
-    if form.validate():
+    # checks if the form was submitted
+    if form.validate_on_submit():
         # checks if the username already exists
         if not form.registerCheck():
             return jsonify({'message': 'Username already exists'}), 400
 
         if not form.validate_email(form.email.data):
             return jsonify({'message': 'Email already registered. Please use a different email address!'})
-    
+        
 
         # add user info to the database
         discipleData = {

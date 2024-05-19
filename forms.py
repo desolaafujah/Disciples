@@ -5,7 +5,7 @@ from pymongo import MongoClient
 from datetime import date
 
 
-class registrationForm():
+class RegistrationForm(FlaskForm):
     maxDate = date.today()
 
     # form fields and validators 
@@ -38,17 +38,18 @@ class registrationForm():
         ('STL ICC', 'St. Louis'),('SYC ICC', 'Syracuse'),('TPA ICC', 'Tampa Bay'),
         ('TTL ICC', 'Thomasville & Tallahassee'),('TUS ICC', 'Tucson'),('TUSC ICC', 'Tuscaloosa'),('DC ICC', 'Washington D.C.')
     ])
+    spirthday = DateField('Spiritual Birthday', validators=[DataRequired()])
+
+
+    password = PasswordField('Password', validators=[DataRequired()])
+    confirmPassword = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Sign Up')
+
 
     # raises an error if date selected is in the future
     def validSpirthday(form):
         if form.spirthday.data > date.today():
             raise ValidationError('Spirthday cannot be in the future lol')
-
-    spirthday = DateField('Spirthday', validators=[DataRequired(), validSpirthday])
-    password = PasswordField('Password', validators=[DataRequired()])
-    confirmPassword = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
-    submit = SubmitField('Sign Up')
-
 
     # checks if the email address is already registered
     # bool function
@@ -60,10 +61,10 @@ class registrationForm():
         user = usersCollection.find_one({"email": email})
         
         if user:
-            raise ValidationError('Email already registered. Please use a different one email address!')
-            return False
-        
-        return True
+            return False #email already registered 
+        else:
+            return True
+            
 
     def registerCheck(username):
         client = MongoClient("mongodb://localhost:27017/")
