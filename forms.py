@@ -18,64 +18,25 @@ class registrationForm():
         # ('value', 'label') -> format
         #value is to be submitted with the form
         #label is what the user sees in the dropdown menu 
-        ('ABQ ICC', 'Albuquerque'),
-        ('ATL ICC', 'Atlanta'),
-        ('AUB ICC', 'Auburn'),
-        ('BR ICC', 'Baton Rouge'),
-        ('BOI ICC', 'Boise'),
-        ('BOS ICC', 'Boston'),
-        ('BZN ICC', 'Bozeman'),
-        ('BRK ICC', 'Brookings'),
-        ('BUR ICC', 'Burlington'),
-        ('CB ICC', 'Casco Bay'),
-        ('CHI ICC', 'Chicago'),
-        ('COA ICC', 'City of Angels'),
-        ('COL ICC', 'Columbus'),
-        ('DFW ICC', 'Dallas/Ft. Worth'),
-        ('DB ICC', 'Daytona Beach'),
-        ('DEL ICC', 'Delaware')
-        ('DEN ICC', 'Denver'),
-        ('DET ICC', 'Detroit'),
-        ('EUG ICC', 'Eugene'),
-        ('FYT ICC', 'Fayetteville')
-        ('FRE ICC', 'Fresno'),
-        ('GNV ICC', 'Gainesville'),
-        ('HFD ICC', 'Hartford'),
-        ('HLO ICC', 'Hilo'),
-        ('HNL ICC', 'Honolulu'),
-        ('HOU ICC', 'Houston'),
-        ('IND ICC', 'Indianapolis'),
-        ('IOW ICC', 'Iowa City'),
-        ('KC ICC', 'Kansas City'),
-        ('KNO ICC', 'Knoxville'),
-        ('KON ICC', 'Kona'),
-        ('LAR ICC', 'Laramie'),
-        ('LV ICC', 'Las Vegas'),
-        ('LIN ICC', 'Lincoln'),
-        ('LOU ICC', 'Louisville'),
-        ('MCH ICC', 'Manchester'),
-        ('MIA ICC', 'Miami / Ft. Lauderdale'),
-        ('MIL ICC', 'Milwaukee'),
-        ('MSP ICC', 'Minneapolis / St. Paul'),
-        ('NYC ICC', 'New York City'),
-        ('OKC ICC', 'Oklahoma'),
-        ('ORL ICC', 'Orlando'),
-        ('PHL ICC', 'Philadelphia'),
-        ('PHX ICC', 'Phoenix'),
-        ('PDX ICC', 'Portland'),
-        ('PRO ICC', 'Providence'),
-        ('SAC ICC', 'Sacramento City'),
-        ('SLC ICC', 'Salt Lake City'),
-        ('SD ICC', 'San Diego'),
-        ('SFB ICC', 'San Francisco Bay'),
-        ('SEA ICC', 'Seattle'),
-        ('STL ICC', 'St. Louis'),
-        ('SYC ICC', 'Syracuse'),
-        ('TPA ICC', 'Tampa Bay'),
-        ('TTL ICC', 'Thomasville & Tallahassee'),
-        ('TUS ICC', 'Tucson'),
-        ('TUSC ICC', 'Tuscaloosa'),
-        ('DC ICC', 'Washington D.C.')
+        ('ABQ ICC', 'Albuquerque'),('ATL ICC', 'Atlanta'),('AUB ICC', 'Auburn'),
+        ('BR ICC', 'Baton Rouge'),('BOI ICC', 'Boise'),('BOS ICC', 'Boston'),
+        ('BZN ICC', 'Bozeman'),('BRK ICC', 'Brookings'),('BUR ICC', 'Burlington'),
+        ('CB ICC', 'Casco Bay'),('CHI ICC', 'Chicago'),('COA ICC', 'City of Angels'),
+        ('COL ICC', 'Columbus'),('DFW ICC', 'Dallas/Ft. Worth'),('DB ICC', 'Daytona Beach'),
+        ('DEL ICC', 'Delaware')('DEN ICC', 'Denver'),('DET ICC', 'Detroit'),
+        ('EUG ICC', 'Eugene'),('FYT ICC', 'Fayetteville')('FRE ICC', 'Fresno'),
+        ('GNV ICC', 'Gainesville'),('HFD ICC', 'Hartford'),('HLO ICC', 'Hilo'),
+        ('HNL ICC', 'Honolulu'),('HOU ICC', 'Houston'),('IND ICC', 'Indianapolis'),
+        ('IOW ICC', 'Iowa City'),('KC ICC', 'Kansas City'),('KNO ICC', 'Knoxville'),
+        ('KON ICC', 'Kona'),('LAR ICC', 'Laramie'),('LV ICC', 'Las Vegas'),
+        ('LIN ICC', 'Lincoln'),('LOU ICC', 'Louisville'),('MCH ICC', 'Manchester'),
+        ('MIA ICC', 'Miami / Ft. Lauderdale'),('MIL ICC', 'Milwaukee'),('MSP ICC', 'Minneapolis / St. Paul'),
+        ('NYC ICC', 'New York City'),('OKC ICC', 'Oklahoma'),('ORL ICC', 'Orlando'),
+        ('PHL ICC', 'Philadelphia'),('PHX ICC', 'Phoenix'),('PDX ICC', 'Portland'),
+        ('PRO ICC', 'Providence'),('SAC ICC', 'Sacramento City'),('SLC ICC', 'Salt Lake City'),
+        ('SD ICC', 'San Diego'),('SFB ICC', 'San Francisco Bay'),('SEA ICC', 'Seattle'),
+        ('STL ICC', 'St. Louis'),('SYC ICC', 'Syracuse'),('TPA ICC', 'Tampa Bay'),
+        ('TTL ICC', 'Thomasville & Tallahassee'),('TUS ICC', 'Tucson'),('TUSC ICC', 'Tuscaloosa'),('DC ICC', 'Washington D.C.')
     ])
 
     # raises an error if date selected is in the future
@@ -89,7 +50,21 @@ class registrationForm():
     submit = SubmitField('Sign Up')
 
 
-    #checks is a user already exists
+    # checks if the email address is already registered
+    # bool function
+    def validate_email(self, email):
+        client = MongoClient("mongodb://localhost:27017/")
+        db = client["disciples"]
+        usersCollection = db["users"]
+
+        user = usersCollection.find_one({"email": email})
+        
+        if user:
+            raise ValidationError('Email already registered. Please use a different one email address!')
+            return False
+        
+        return True
+
     def registerCheck(username):
         client = MongoClient("mongodb://localhost:27017/")
         db = client["disciples"]

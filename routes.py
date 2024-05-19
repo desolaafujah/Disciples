@@ -36,13 +36,16 @@ mongo = PyMongo(app)
 @app.route('/register', methods=['POST'])
 #function to register user and log information into the database
 def register(username, password):
-    form = registrationForm(request.form)
+    form = registrationForm()
 
     # check if the username already exists
     if form.validate():
+        # checks if the username already exists
         if not form.registerCheck():
             return jsonify({'message': 'Username already exists'}), 400
 
+        if not form.validate_email(form.email.data):
+            return jsonify({'message': 'Email already registered. Please use a different email address!'})
     
 
         # add user info to the database
